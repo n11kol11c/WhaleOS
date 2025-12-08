@@ -1,1 +1,60 @@
-# WhaleOS
+; ==============================================================================
+;                               WHALEOS
+;                         A WORK-IN-PROGRESS OPERATING SYSTEM
+; ==============================================================================
+;  WhaleOS is an experimental operating system project currently under active
+;  construction. The primary intention behind WhaleOS is to explore low-level
+;  systems programming concepts while maintaining a clean, minimal, and educational
+;  codebase. At this stage, the project should be considered a prototype rather
+;  than a finished OS.
+;
+;  WHAT THIS PROJECT IS:
+;  ---------------------
+;  • A sandbox for learning kernel development  
+;  • A minimalistic and transparent implementation  
+;  • A platform where ideas can be tested quickly  
+;  • A project that evolves through incremental refinement  
+;
+;  WHAT THIS PROJECT IS NOT (YET):
+;  --------------------------------
+;  • Not feature complete  
+;  • Not stable  
+;  • Not suitable for daily use or production  
+;  • Not guaranteed to maintain backwards compatibility  
+;
+;  Current Status:
+;  ----------------
+;  WhaleOS is in an early-stage development phase. Core components such as memory
+;  management, multitasking, device drivers, and a usable shell are either
+;  partially implemented or completely absent. Many subsystems exist only as
+;  placeholders or simple demonstrations. The codebase may change dramatically
+;  as the architecture matures.
+;
+;  Design Philosophy:
+;  ------------------
+;  WhaleOS follows a minimalistic philosophy: implement only what is necessary,
+;  keep the design transparent, and avoid unnecessary complexity. This approach
+;  makes the project approachable for learners and easier to extend for advanced
+;  experimentation. Simplicity is preferred over feature density during early
+;  development.
+;
+;  CONTRIBUTIONS:
+;  --------------
+;  Contributions, ideas, and constructive feedback are welcome. Because WhaleOS
+;  is still being shaped, even small improvements can have a meaningful impact.
+;  Expect refactoring and breaking changes as the internal architecture evolves.
+;
+;  USERS AND READERS:
+;  -------------------
+;  If you are exploring this project, please keep in mind:
+;      • Many components are incomplete  
+;      • Behavior may change between commits  
+;      • Documentation is still growing  
+;      • Bugs are expected  
+;
+;  Thank you for your interest in WhaleOS.  
+;  Whether you are learning, experimenting, or simply curious about OS internals,
+;  we hope the project serves as a clear and educational reference.
+;
+;  — @n11kol11c
+; ==============================================================================
