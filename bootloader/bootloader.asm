@@ -1,3 +1,5 @@
+; simple bootloader with hlt looping
+; booting from floppy disk (img)
 org 0x7C00
 bits 16
 
