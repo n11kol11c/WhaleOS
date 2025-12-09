@@ -4,10 +4,6 @@ bits 16
 
 %define ENDL 0x0D, 0x0A
 
-
-;
-; FAT12 header
-; 
 jmp short start
 nop
 
@@ -33,19 +29,10 @@ ebr_volume_id:              db 12h, 34h, 56h, 78h   ; serial number, value doesn
 ebr_volume_label:           db 'NANOBYTE OS'        ; 11 bytes, padded with spaces
 ebr_system_id:              db 'FAT12   '           ; 8 bytes
 
-;
-; Code goes here
-;
-
 start:
     jmp main
 
 
-;
-; Prints a string to the screen
-; Params:
-;   - ds:si points to string
-;
 puts:
     ; save registers we will modify
     push si
@@ -72,35 +59,30 @@ puts:
 
 main:
     ; setup data segments
-    mov ax, 0                   ; can't set ds/es directly
+    mov ax, 0 
     mov ds, ax
     mov es, ax
     
     ; setup stack
     mov ss, ax
-    mov sp, 0x7C00              ; stack grows downwards from where we are loaded in memory
+    mov sp, 0x7C00 
 
-    ; read something from floppy disk
-    ; BIOS should set DL to drive number
     mov [ebr_drive_number], dl
 
-        ; read something from floppy disk
     mov [ebr_drive_number], dl
 
-    mov ax, 2                   ; LBA=1 (first data sector after boot sector)
-    mov cl, 4                   ; read 4 sectors (adjust as needed) -> 4*512 = 2048 bytes
-    mov bx, 0x7E00              ; load address for kernel
+    mov ax, 2 
+    mov cl, 4
+    mov bx, 0x7E00
     call disk_read
 
     ; jump to kernel loaded at 0x7E00
     cli
-    jmp 0x0000:0x7E00           ; real mode far jump to 0x0000:0x7E00 where our pm stub lives
+    jmp 0x0000:0x7E00 
 
 
 
-;
-; Error handlers
-;
+
 
 floppy_error:
     mov si, msg_read_failed
@@ -109,82 +91,58 @@ floppy_error:
 
 wait_key_and_reboot:
     mov ah, 0
-    int 16h                     ; wait for keypress
-    jmp 0FFFFh:0                ; jump to beginning of BIOS, should reboot
+    int 16h
+    jmp 0FFFFh:0 
 
 .halt:
-    cli                         ; disable interrupts, this way CPU can't get out of "halt" state
+    cli 
     hlt
 
-
-;
-; Disk routines
-;
-
-;
-; Converts an LBA address to a CHS address
-; Parameters:
-;   - ax: LBA address
-; Returns:
-;   - cx [bits 0-5]: sector number
-;   - cx [bits 6-15]: cylinder
-;   - dh: head
-;
 
 lba_to_chs:
 
     push ax
     push dx
 
-    xor dx, dx                          ; dx = 0
-    div word [bdb_sectors_per_track]    ; ax = LBA / SectorsPerTrack
-                                        ; dx = LBA % SectorsPerTrack
+    xor dx, dx                          
+    div word [bdb_sectors_per_track]    
 
-    inc dx                              ; dx = (LBA % SectorsPerTrack + 1) = sector
-    mov cx, dx                          ; cx = sector
-
-    xor dx, dx                          ; dx = 0
-    div word [bdb_heads]                ; ax = (LBA / SectorsPerTrack) / Heads = cylinder
-                                        ; dx = (LBA / SectorsPerTrack) % Heads = head
-    mov dh, dl                          ; dh = head
-    mov ch, al                          ; ch = cylinder (lower 8 bits)
+    inc dx                              
+    mov cx, dx                         
+    xor dx, dx                          
+    div word [bdb_heads]                
+                                        
+    mov dh, dl                         
+    mov ch, al                         
     shl ah, 6
-    or cl, ah                           ; put upper 2 bits of cylinder in CL
+    or cl, ah                          
 
     pop ax
-    mov dl, al                          ; restore DL
+    mov dl, al                         
     pop ax
     ret
 
 
-;
-; Reads sectors from a disk
-; Parameters:
-;   - ax: LBA address
-;   - cl: number of sectors to read (up to 128)
-;   - dl: drive number
-;   - es:bx: memory address where to store read data
-;
 disk_read:
 
-    push ax                             ; save registers we will modify
+    push ax                            
     push bx
     push cx
     push dx
     push di
 
-    push cx                             ; temporarily save CL (number of sectors to read)
-    call lba_to_chs                     ; compute CHS
-    pop ax                              ; AL = number of sectors to read
+    push cx                             
+    call lba_to_chs                    
+    pop ax                              
     
     mov ah, 02h
-    mov di, 3                           ; retry count
+    mov di, 3                          
 
 .retry:
-    pusha                               ; save all registers, we don't know what bios modifies
-    stc                                 ; set carry flag, some BIOS'es don't set it
-    int 13h                             ; carry flag cleared = success
-    jnc .done                           ; jump if carry not set
+    pusha                              
+    stc                               
+    int 13h                             
+    jnc .done                           
 
     ; read failed
     popa
@@ -195,7 +153,6 @@ disk_read:
     jnz .retry
 
 .fail:
-    ; all attempts are exhausted
     jmp floppy_error
 
 .done:
@@ -205,15 +162,10 @@ disk_read:
     pop dx
     pop cx
     pop bx
-    pop ax                             ; restore registers modified
+    pop ax                             
     ret
 
 
-;
-; Resets disk controller
-; Parameters:
-;   dl: drive number
-;
 disk_reset:
     pusha
     mov ah, 0
@@ -224,7 +176,7 @@ disk_reset:
     ret
 
 
-msg_hello:              db 'Hello world!', ENDL, 0
+msg_hello:              db 'Welcome to WhaleOS!', ENDL, 0
 msg_read_failed:        db 'Read from disk failed!', ENDL, 0
 
 times 510-($-$$) db 0
