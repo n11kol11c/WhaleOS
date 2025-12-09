@@ -87,7 +87,7 @@ main:
         ; read something from floppy disk
     mov [ebr_drive_number], dl
 
-    mov ax, 1                   ; LBA=1 (first data sector after boot sector)
+    mov ax, 2                   ; LBA=1 (first data sector after boot sector)
     mov cl, 4                   ; read 4 sectors (adjust as needed) -> 4*512 = 2048 bytes
     mov bx, 0x7E00              ; load address for kernel
     call disk_read
