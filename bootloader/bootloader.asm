@@ -58,12 +58,10 @@ puts:
     
 
 main:
-    ; setup data segments
     mov ax, 0 
     mov ds, ax
     mov es, ax
     
-    ; setup stack
     mov ss, ax
     mov sp, 0x7C00 
 
@@ -76,7 +74,6 @@ main:
     mov bx, 0x7E00
     call disk_read
 
-    ; jump to kernel loaded at 0x7E00
     cli
     jmp 0x0000:0x7E00 
 
